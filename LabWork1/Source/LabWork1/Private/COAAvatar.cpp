@@ -62,8 +62,6 @@ void ACOAAvatar::Tick(float DeltaTime)
 		
 	}
 
-	/*UpdateMovementParams(DeltaTime);*/
-
 	GEngine->AddOnScreenDebugMessage(0, DeltaTime, FColor::Yellow, FString::Printf(TEXT("Stamina: %f"), Stamina));
 
 	UE_LOG(LogTemp, Warning, TEXT("Stamina: %f"), Stamina); //print stringing but only showed in the output window
@@ -117,25 +115,4 @@ void ACOAAvatar::UpdateMovementParams()
 {
 	GetCharacterMovement()->MaxWalkSpeed =
 		bHoldingRunKey && !bStaminaDrained ? RunningSpeed : WalkingSpeed;
-
-	/*if (bHoldingRunKey)
-	{
-		Stamina = FMath::Max(0, Stamina - StaminaDrainRate * deltatime);
-
-		if (Stamina == 0)
-		{
-			RunReleased();
-			bStaminaDrained = true;
-		}
-	}
-	else if (!bHoldingRunKey)
-	{
-		Stamina = FMath::Min(MaxStamina, Stamina + StaminaGainRate * deltatime);
-
-		if (Stamina == MaxStamina)
-		{
-			bStaminaDrained = false;
-		}
-	}*/
-	//GEngine->AddOnScreenDebugMessage(1, 0.5f, FColor::Red, FString::Printf(TEXT("GEEEYYY")));
 }
