@@ -37,22 +37,10 @@ void ACOAAvatar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//Update Stamina
 	if (GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking) 
 	{
-		if (bHoldingRunKey && !bStaminaDrained)
-		{
-			if (!GetCharacterMovement()->Velocity.IsNearlyZero(0.01f))
-			{
-				Stamina = FMath::Max(0.0f, Stamina - StaminaDrainRate * DeltaTime);
-				if (Stamina == 0.0f)
-				{
-					bStaminaDrained = true;
-					UpdateMovementParams();
-				}
-			}
-
-		}
-		else
+		if (!bHoldingRunKey || bStaminaDrained)
 		{
 			Stamina = FMath::Min(MaxStamina, Stamina + StaminaGainRate * DeltaTime);
 
@@ -62,6 +50,16 @@ void ACOAAvatar::Tick(float DeltaTime)
 				UpdateMovementParams();
 			}
 		}
+		else if (!GetCharacterMovement()->Velocity.IsNearlyZero(0.01f))
+		{
+			Stamina = FMath::Max(0.0f, Stamina - StaminaDrainRate * DeltaTime);
+			if (Stamina == 0.0f)
+			{
+				bStaminaDrained = true;
+				UpdateMovementParams();
+			}
+		}
+		
 	}
 
 	/*UpdateMovementParams(DeltaTime);*/
