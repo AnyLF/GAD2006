@@ -21,6 +21,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* GridSelection;
 
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* TilePreview;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -30,6 +33,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void OnActorInteraction(AActor* HitActor, FVector& Location, bool IsPressed);
+
+	void RefreshTilePreview();
 
 	UPROPERTY(EditAnywhere)
 	int GridSize;
