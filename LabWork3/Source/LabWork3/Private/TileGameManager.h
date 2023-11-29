@@ -34,8 +34,6 @@ public:
 
 	void OnActorInteraction(AActor* HitActor, FVector& Location, bool IsPressed);
 
-	void RefreshTilePreview();
-
 	UPROPERTY(EditAnywhere)
 	int GridSize;
 	

@@ -26,10 +26,14 @@ ATileGameManager::ATileGameManager() :
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> GridMaterial(TEXT("Material'/Game/UI/MAT_GridSlot.MAT_GridSlot'"));
 
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> PreviewMaterial(TEXT("Material'/Game/Materials/M_Atlas_Tranclucent.M_Atlas_Tranclucent'"));
+
 	GridSelection->SetStaticMesh(PlaneMesh.Object);
 	GridSelection->SetMaterial(0, GridMaterial.Object);
 	GridSelection->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	TilePreview->SetMaterial(0, PreviewMaterial.Object);
+	TilePreview->SetRelativeScale3D(FVector(0.083333f, 0.083333f, 0.1f));
 	TilePreview->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 }
@@ -43,8 +47,6 @@ void ATileGameManager::BeginPlay()
 	{
 		PlayerController->GameManager = this;
 	}
-
-	RefreshTilePreview();
 }
 
 // Called every frame
@@ -92,7 +94,7 @@ void ATileGameManager::OnActorInteraction(AActor* HitActor, FVector& Location, b
 			Map[GridX][GridY] = SelectedTile;
 
 			FTransform TileTransform(GridLoc + GridOffset);
-			TileTransform = FTransform(GetActorRotation(), TileTransform.GetLocation(), TileTransform.GetScale3D());
+			TileTransform = FTransform(TilePreview->GetRelativeRotation(), TileTransform.GetLocation(), TileTransform.GetScale3D());
 			SelectedTile->InstancedMesh->AddInstance(SelectedTile->InstancedMesh->GetRelativeTransform() * TileTransform, true);
 		}
 		
@@ -100,9 +102,9 @@ void ATileGameManager::OnActorInteraction(AActor* HitActor, FVector& Location, b
 	}
 	else if (Input->WasJustPressed(EKeys::RightMouseButton))
 	{
-		SetActorRotation(FRotator(0, GetActorRotation().Yaw + 90, 0));
-		/*TilePreview->SetRelativeRotation(FRotator(0, TilePreview->GetRelativeRotation().Yaw + 90, 0));
-		TileTypes[CurrentTileIndex]->SetActorRelativeRotation(TilePreview->GetRelativeRotation());*/
+		int previewRotation = 0; 
+		previewRotation = (previewRotation + 90) % 360;
+		TilePreview->SetRelativeRotation(FRotator(0, TilePreview->GetRelativeRotation().Yaw + previewRotation, 0));
 	}
 	else if (Input->WasJustPressed(EKeys::MouseScrollUp))
 	{
@@ -112,27 +114,20 @@ void ATileGameManager::OnActorInteraction(AActor* HitActor, FVector& Location, b
 		}
 		else CurrentTileIndex--;
 
-		RefreshTilePreview();
 		UE_LOG(LogTemp, Warning, TEXT("TileType: %s"), *TileTypes[CurrentTileIndex]->GetActorLabel());
 	}
 	else if (Input->WasJustPressed(EKeys::MouseScrollDown))
 	{
 		CurrentTileIndex = (CurrentTileIndex + 1) % TileTypes.Num();
 
-		RefreshTilePreview();
 
 		UE_LOG(LogTemp, Warning, TEXT("TileType: %s"), *TileTypes[CurrentTileIndex]->GetActorLabel());
 	}
 	else
 	{
 		GridSelection->SetWorldLocation(GridLoc + GridOffset);
+
+		TilePreview->SetStaticMesh(TileTypes[CurrentTileIndex]->InstancedMesh->GetStaticMesh());
 		TilePreview->SetWorldLocation(GridLoc + GridOffset);
 	}
-
-}
-
-void ATileGameManager::RefreshTilePreview()
-{
-		TilePreview->SetStaticMesh(TileTypes[CurrentTileIndex]->InstancedMesh->GetStaticMesh());
-		TilePreview->SetRelativeScale3D(TileTypes[CurrentTileIndex]->InstancedMesh->GetRelativeScale3D());
 }
