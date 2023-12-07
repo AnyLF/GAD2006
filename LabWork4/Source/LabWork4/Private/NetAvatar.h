@@ -29,6 +29,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	bool bHoldingRunKey;
 
+	UPROPERTY(BlueprintReadWrite)
+	float MovementScale;
+
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
