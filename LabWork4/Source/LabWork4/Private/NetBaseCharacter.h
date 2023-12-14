@@ -78,6 +78,9 @@ public:
     void CheckPlayerInfo();
 
     UPROPERTY()
+    FText PartNickName;
+
+    UPROPERTY()
     USkeletalMeshComponent* PartFace;
 
     UPROPERTY()
@@ -97,6 +100,12 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     USkeletalMeshComponent* PartLegs;
+
+    UPROPERTY(BlueprintReadWrite)
+    FString IpAdress;
+
+    UPROPERTY(BlueprintReadWrite)
+    FString PlayerNickName;
 
     bool PlayerInfoReceived;
 

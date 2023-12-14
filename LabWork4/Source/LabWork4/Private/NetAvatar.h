@@ -26,7 +26,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* SpringArm;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_UpdateMovementParams)
 	bool bHoldingRunKey;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -42,10 +42,12 @@ public:
 	void ServerStopRunning();
 
 private:
+	UFUNCTION()
+	void OnRep_UpdateMovementParams();
+
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
 	void RunPressed();
 	void RunReleased();
-	void UpdateMovementParams();
 	
 };

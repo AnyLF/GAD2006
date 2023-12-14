@@ -25,6 +25,12 @@ void ANetAvatar::BeginPlay()
 	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 }
 
+void ANetAvatar::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ANetAvatar, bHoldingRunKey);
+}
+
 void ANetAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -56,7 +62,7 @@ void ANetAvatar::MoveRight(float Scale)
 }
 
 
-void ANetAvatar::UpdateMovementParams()
+void ANetAvatar::OnRep_UpdateMovementParams()
 {
 	if (bHoldingRunKey)
 	{
@@ -73,7 +79,7 @@ void ANetAvatar::RunPressed()
 	if (HasAuthority())
 	{
 		bHoldingRunKey = true;
-		UpdateMovementParams();
+		OnRep_UpdateMovementParams();
 	}
 	else
 	{
@@ -86,7 +92,7 @@ void ANetAvatar::RunReleased()
 	if (HasAuthority())
 	{
 		bHoldingRunKey = false;
-		UpdateMovementParams();
+		OnRep_UpdateMovementParams();
 	}
 	else
 	{
