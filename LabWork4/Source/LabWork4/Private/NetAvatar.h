@@ -9,7 +9,7 @@
 #include "NetAvatar.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class ANetAvatar : public ANetBaseCharacter
@@ -26,8 +26,11 @@ public:
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* SpringArm;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_UpdateMovementParams)
 	bool bHoldingRunKey;
+
+	UPROPERTY(BlueprintReadWrite)
+	float MovementScale;
 
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
@@ -39,10 +42,12 @@ public:
 	void ServerStopRunning();
 
 private:
+	UFUNCTION()
+	void OnRep_UpdateMovementParams();
+
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
 	void RunPressed();
 	void RunReleased();
-	void UpdateMovementParams();
-	
+
 };
