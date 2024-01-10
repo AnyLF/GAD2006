@@ -8,7 +8,7 @@
 #include "NetGameMode.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class ANetGameMode : public AGameModeBase
@@ -24,6 +24,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AvatarsOverlapped(ANetAvatar* AvatarA, ANetAvatar* AvatarB);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void TimeOver();
+
+	UFUNCTION()
+	void SetWinner(ANetAvatar* AAvatar, ANetAvatar* BAvatar, bool bRedWon);
+
 	UFUNCTION(BlueprintCallable)
 	void EndGame();
 
@@ -37,5 +43,5 @@ private:
 	AActor* GetPlayerStart(FString Name, int Index);
 
 	AActor* AssignTeamAndPlayerStart(AController* Player);
-	
+
 };

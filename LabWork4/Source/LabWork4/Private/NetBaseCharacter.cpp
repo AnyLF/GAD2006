@@ -51,6 +51,9 @@ ANetBaseCharacter::ANetBaseCharacter()
 	PartEyes->SetupAttachment(PartFace, FName("headSocket"));
 	PartEyes->SetStaticMesh(SK_Eyes.Object);
 
+	TextRenderer = CreateDefaultSubobject<UTextRenderComponent>(TEXT("AvatarNickname"));
+	TextRenderer->SetupAttachment(GetRootComponent());
+
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_BodyParts(TEXT("DataTable'/Game/Blueprints/DT_BodyParts.DT_BodyParts'"));
 	SBodyParts = DT_BodyParts.Object;
 }
@@ -63,7 +66,7 @@ void ANetBaseCharacter::BeginPlay()
 	if (GetNetMode() == ENetMode::NM_Standalone)
 	{
 		return;
-	}	
+	}
 	SetActorHiddenInGame(true);
 	CheckPlayerState();
 }
@@ -85,7 +88,7 @@ FString ANetBaseCharacter::GetCustomizationData()
 	for (size_t i = 0; i < (int)EBodyPart::BP_COUNT; i++)
 	{
 		Data += FString::FromInt(BodyPartIndices[i]);
-		if (i < ((int)(EBodyPart::BP_COUNT)-1)) 
+		if (i < ((int)(EBodyPart::BP_COUNT)-1))
 		{
 			Data += TEXT(",");
 		}
@@ -111,24 +114,24 @@ void ANetBaseCharacter::ChangeBodyPart(EBodyPart index, int value, bool DirectSe
 
 	int CurrentIndex = BodyPartIndices[(int)index];
 
-	if (DirectSet) 
-	{ 
-		CurrentIndex = value; 
+	if (DirectSet)
+	{
+		CurrentIndex = value;
 	}
-	else 
-	{ 
-		CurrentIndex += value; 
+	else
+	{
+		CurrentIndex += value;
 	}
 
 	int Num = List->ListSkeletal.Num() + List->ListStatic.Num();
 
-	if (CurrentIndex < 0) 
-	{ 
-		CurrentIndex += Num; 
+	if (CurrentIndex < 0)
+	{
+		CurrentIndex += Num;
 	}
-	else 
-	{ 
-		CurrentIndex %= Num; 
+	else
+	{
+		CurrentIndex %= Num;
 	}
 
 	BodyPartIndices[(int)index] = CurrentIndex;
@@ -180,6 +183,8 @@ void ANetBaseCharacter::CheckPlayerInfo()
 		UpdateBodyParts();
 		OnPlayerInfoChanged();
 		SetActorHiddenInGame(false);
+
+		TextRenderer->SetText(FText::FromString(State->Data.Nickname));
 	}
 	else
 	{
@@ -198,12 +203,6 @@ void ANetBaseCharacter::SubmitPlayerInfoToServer_Implementation(FSPlayerInfo Inf
 	PlayerInfoReceived = true;
 }
 
-//void ANetBaseCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
-//{
-//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-//	DOREPLIFETIME(ANetBaseCharacter, PartSelection);
-//}
-
 FSMeshAssetList* ANetBaseCharacter::GetBodyPartList(EBodyPart part, bool isFemale)
 {
 	FString Name = FString::Printf(TEXT("%s%s"), isFemale ? TEXT("Female") : TEXT("Male"), BodyPartNames[(int)part]);
@@ -221,4 +220,3 @@ void ANetBaseCharacter::UpdateBodyParts()
 	ChangeBodyPart(EBodyPart::BP_EyeBrows, 0, false);
 
 }
-

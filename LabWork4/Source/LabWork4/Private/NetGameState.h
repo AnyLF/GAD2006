@@ -7,9 +7,11 @@
 #include "NetGameState.generated.h"
 
 class ANetPlayerState;
+class ANetGameMode;
+
 
 /**
- * 
+ *
  */
 UCLASS()
 class ANetGameState : public AGameStateBase
@@ -37,4 +39,26 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	ANetPlayerState* GetPlayerStateByIndex(int PlayerIndex);
+
+	UPROPERTY(BlueprintReadOnly)
+	float Timer;
+
+	FTimerHandle TimerHandle_Timer;
+
+	UFUNCTION(BlueprintCallable)
+	void StartTimer();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void StopTimer();
+
+	void UpdateTimer();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateTimerDisplay();
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_RemainingTime)
+	float RemainingTime;
+
+	UFUNCTION()
+	void OnRep_RemainingTime();
 };

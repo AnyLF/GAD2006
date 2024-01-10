@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "NetGameInstance.h"
 #include "Runtime/Engine/Classes/Engine/DataTable.h"
+#include "Components/TextRenderComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "NetBaseCharacter.generated.h"
 
@@ -39,20 +40,20 @@ struct FSMeshAssetList : public FTableRowBase
 UCLASS()
 class ANetBaseCharacter : public ACharacter
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	ANetBaseCharacter();
+    // Sets default values for this character's properties
+    ANetBaseCharacter();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
     virtual void OnConstruction(const FTransform& Transform) override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
 
     UFUNCTION(BlueprintPure)
     FString GetCustomizationData();
@@ -79,6 +80,9 @@ public:
 
     UPROPERTY()
     FText PartNickName;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    UTextRenderComponent* TextRenderer;
 
     UPROPERTY()
     USkeletalMeshComponent* PartFace;
